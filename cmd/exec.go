@@ -139,7 +139,7 @@ func execRun(cmd *cobra.Command, args []string) error {
 				err = env.LoadNoPaths(secretStore, service, &collisions)
 			} else {
 				if noclobber {
-					err = env.loadNoClobber(secretStore, service, &collisions, false)
+					err = env.LoadNoClobber(secretStore, service, &collisions, false)
 				} else {
 					err = env.Load(secretStore, service, &collisions)
 				}

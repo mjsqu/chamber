@@ -192,10 +192,10 @@ func (e *Environ) loadStrictOne(rawSecrets []store.RawSecret, valueExpected stri
 	return nil
 }
 
-// loadNoClobber loads environment variables into e from s given a service - without overwriting
+// LoadNoClobber loads environment variables into e from s given a service - without overwriting
 // collisions will be populated with any keys that already existed so were not overwritten
 // noPaths enables the behavior as if CHAMBER_NO_PATHS had been set
-func (e *Environ) loadNoClobber(s store.Store, service string, collisions *[]string, noPaths bool) error {
+func (e *Environ) LoadNoClobber(s store.Store, service string, collisions *[]string, noPaths bool) error {
 	rawSecrets, err := s.ListRaw(utils.NormalizeService(service))
 	if err != nil {
 		return err
