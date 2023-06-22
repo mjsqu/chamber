@@ -137,8 +137,7 @@ func execRun(cmd *cobra.Command, args []string) error {
 			} else {
 				if noclobber {
 					err = env.loadNoClobber(secretStore, service, &collisions, false)
-				}
-				else {
+				} else {
 					err = env.Load(secretStore, service, &collisions)
 				}
 			}
@@ -149,8 +148,7 @@ func execRun(cmd *cobra.Command, args []string) error {
 			for _, c := range collisions {
 				if noclobber {
 					fmt.Fprintf(os.Stderr, "warning: Not overwriting existing environment variable %s from service %s\n", c, service)
-				}
-				else {
+				} else {
 					fmt.Fprintf(os.Stderr, "warning: service %s overwriting environment variable %s\n", service, c)
 				}
 			}
