@@ -17,6 +17,9 @@ var pristine bool
 // When true, enable strict mode, which checks that all secrets replace env vars with a special sentinel value
 var strict bool
 
+// When true, enable noclobber mode, which does not overwrite already set environment variables
+var noclobber bool
+
 // Value to expect in strict mode
 var strictValue string
 
