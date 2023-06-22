@@ -208,8 +208,7 @@ func (e *Environ) loadNoClobber(s store.Store, service string, collisions *[]str
 
 		if e.IsSet(envVarKey) {
 			*collisions = append(*collisions, envVarKey)
-		}
-		else {
+		} else {
 			e.Set(envVarKey, rawSecret.Value)
 		}
 	}
