@@ -57,6 +57,12 @@ Given a secret store like this:
 	$ HOME=/tmp DB_USERNAME=chamberme DB_PASSWORD=chamberme chamber exec --strict --pristine service exec -- env
 	DB_USERNAME=root
 	DB_PASSWORD=hunter22
+
+--noclobber does not overwrite existing environment variables
+
+	$ HOME=/tmp DB_USERNAME=bert chamber exec --noclobber service exec -- env
+	DB_USERNAME=bert
+	DB_PASSWORD=hunter22
 `,
 }
 
@@ -66,6 +72,7 @@ func init() {
 only inject secrets for which there is a corresponding env var with value
 <strict-value>, and fail if there are any env vars with that value missing
 from secrets`)
+	execCmd.Flags().BoolVar(&noclobber, "noclobber", false, "inherit existing environment variables; do not overwrite with variables retrieved from backend")
 	execCmd.Flags().StringVar(&strictValue, "strict-value", strictValueDefault, "value to expect in --strict mode")
 	RootCmd.AddCommand(execCmd)
 }
@@ -128,14 +135,24 @@ func execRun(cmd *cobra.Command, args []string) error {
 			if noPaths {
 				err = env.LoadNoPaths(secretStore, service, &collisions)
 			} else {
-				err = env.Load(secretStore, service, &collisions)
+				if noclobber {
+					err = env.loadNoClobber(secretStore, service, &collisions, false)
+				}
+				else {
+					err = env.Load(secretStore, service, &collisions)
+				}
 			}
 			if err != nil {
 				return fmt.Errorf("Failed to list store contents: %w", err)
 			}
 
 			for _, c := range collisions {
-				fmt.Fprintf(os.Stderr, "warning: service %s overwriting environment variable %s\n", service, c)
+				if noclobber {
+					fmt.Fprintf(os.Stderr, "warning: Not overwriting existing environment variable %s from service %s\n", c, service)
+				}
+				else {
+					fmt.Fprintf(os.Stderr, "warning: service %s overwriting environment variable %s\n", service, c)
+				}
 			}
 		}
 	}
